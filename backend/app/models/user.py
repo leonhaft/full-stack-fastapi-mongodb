@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from datetime import datetime
-from pydantic import EmailStr
-from odmantic import ObjectId, Field
+from pydantic import EmailStr,Field
+from beanie import PydanticObjectId
+ 
+
 
 from app.db.base_class import Base
 
@@ -25,4 +27,4 @@ class User(Base):
     email_validated: bool = Field(default=False)
     is_active: bool = Field(default=False)
     is_superuser: bool = Field(default=False)
-    refresh_tokens: list[ObjectId] = Field(default_factory=list)
+    refresh_tokens: list[PydanticObjectId] = Field(default_factory=list)

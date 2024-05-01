@@ -4,11 +4,15 @@ from contextlib import asynccontextmanager
 
 from app.api.api_v1.api import api_router
 from app.core.config import settings
+from backend.app.db.session import init_MongoDatabase
+from backend.app.models.user import User
+from backend.app.models.token import Token
 
 
 @asynccontextmanager
 async def app_init(app: FastAPI):
     app.include_router(api_router, prefix=settings.API_V1_STR)
+    await init_MongoDatabase(models=[User, Token])
     yield
 
 
@@ -23,9 +27,8 @@ if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
         # Trailing slash causes CORS failures from these supported domains
-        allow_origins=[str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS], # noqa
+        allow_origins=[str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS],  # noqa
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-

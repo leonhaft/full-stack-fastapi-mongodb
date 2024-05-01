@@ -2,10 +2,12 @@ import asyncio
 import logging
 
 from app.db.init_db import init_db
-from app.db.session import MongoDatabase
+from app.db.session import MongoDatabase, init_MongoDatabase
 
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
+from backend.app.models.user import User
+from backend.app.models.token import Token
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ wait_seconds = 1
     after=after_log(logger, logging.WARN),
 )
 async def populate_db() -> None:
+    await init_MongoDatabase(models=[User, Token])
     await init_db(MongoDatabase())
     # Place any code after this line to add any db population steps
 
